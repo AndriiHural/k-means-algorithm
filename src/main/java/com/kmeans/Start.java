@@ -7,13 +7,11 @@ import java.util.List;
 import java.lang.Math;
 
 public class Start {
-    public static List<double[]> centerCoord = new ArrayList<>();
-    public static List<Cluster> clusters = new ArrayList<>();
-    public static double[] coordinates;
-
+    private static List<Cluster> clusters = new ArrayList<>();
+    private static double[] coordinates;
+    private static final String READFILE="Test-case-2.txt";
     public static void main(String[] args) {
-
-        String[] content = readUsingBufferredReader().split(" ");//дані з файлу//TODO static?
+        String[] content = IOWithFile.readUsingBufferredReader(READFILE).split(" ");//дані з файлу//TODO static?
         double[] arrContent = Arrays.asList(content).stream().mapToDouble(Double::parseDouble).toArray();
         coordinates = Arrays.copyOfRange(arrContent, 2, arrContent.length);
         int k = (int) arrContent[0];
@@ -27,44 +25,14 @@ public class Start {
             choiceCenter(k);
             //step 5: have the coordinates changed?
         }
-        writeUsingBufferredWriter();
-    }
-
-    public static void writeUsingBufferredWriter() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Output.txt"))) {
-            for (Cluster cluster :
-                    clusters) {
-                //cluster.newCenter();
-                System.out.println(cluster.toString());
-                bw.write(cluster.getX() + "\t" + cluster.getY() + "\t" + cluster.getAmount() + "\n");
-
-            }
-
-            System.out.println("Done");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String readUsingBufferredReader() {
-        String content = "";
-        try (BufferedReader br = new BufferedReader(new FileReader("Test-case-2.txt"))) {
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                line.trim();
-                content += line + " ";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return content;
+        IOWithFile.writeUsingBufferredWriter(clusters);
     }
 
     /**
      * Сhoice start coordinates
      * k-number of cluster
      */
-    public static void choiceCenter(int k) {//TODO Переробити, бо тут можна зразу створювати об Кластера
+    public static void choiceCenter(int k) {
         if (clusters.isEmpty()) {
             System.out.println("Yes List Center is Empty");
             int x = 0;//start coordinates x
@@ -113,9 +81,7 @@ public class Start {
      * Відстань від центра до точоки
      */
     public static double distanceCenterToAllPoint(double x1, double y1, double x2, double y2) {
-        List<Double> distances = new ArrayList<>();
         Double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-        distances.add(distance);
         System.out.println("Distance between X1= " + x1 + " Y1 " + y1 + " X2= " + x2 + " Y2 " + y2 + " ->" + distance);
 
         return distance;
@@ -124,7 +90,7 @@ public class Start {
     /**
      * Check the optimal choice the points
      */
-    public static boolean isChangeCenter() {//TODo наркутив з змінними, тяжко для розуміння
+    public static boolean isChangeCenter() {
         for (Cluster cluster :
                 clusters) {
             if (!cluster.isOptimal()) return true;
