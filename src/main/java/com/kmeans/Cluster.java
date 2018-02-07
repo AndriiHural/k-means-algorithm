@@ -5,11 +5,22 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Contain center-points and other points this cluster*/
+ * Contain center-points and other points this cluster
+ */
 public class Cluster {
     private double x;
     private double y;
-    private List<double[]> points =new ArrayList<>();
+    private List<double[]> points = new ArrayList<>();
+    private boolean isOptimal = false;
+    private int amount;
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
     public Cluster(double x, double y) {
         this.x = x;
@@ -42,9 +53,9 @@ public class Cluster {
 
     @Override
     public String toString() {
-        String contain="";
-        for (double[] point:points) {
-            contain+= Arrays.toString(point)+" ";
+        String contain = "";
+        for (double[] point : points) {
+            contain += Arrays.toString(point) + " ";
         }
         return "Cluster{" +
                 "x=" + x +
@@ -53,21 +64,41 @@ public class Cluster {
                 '}';
     }
 
-    public void addPoint(double[]point) {
+    public void addPoint(double[] point) {
         this.points.add(point);
     }
 
-    public void newCenter(){
-        double sumX=0,sumY=0;
+    public boolean isOptimal() {
+        return isOptimal;
+    }
+
+    public void setOptimal(boolean optimal) {
+        isOptimal = optimal;
+    }
+
+    public void newCenter() {
+        amount = points.size();
+        double sumX = 0, sumY = 0;
         for (double[] point :
                 points) {
             sumX += point[0];
             sumY += point[1];
         }
-        x=sumX/points.size();
-        y=sumY/points.size();
+        double newX = sumX / points.size();
+        double newY = sumY / points.size();
+        if (x == newX && y == newY) {
+            isOptimal = true;
+            System.out.println("\t Oll center is [" + x + " , " + y + "]");
+        } else {
+            isOptimal = false;
+            x = newX;
+
+            y = newY;
+            System.out.println("\t New center is [" + x + " , " + y + "]");
+        }
     }
-    public void removeAll(){
+
+    public void removeAllPoins() {
         points.clear();
     }
 }

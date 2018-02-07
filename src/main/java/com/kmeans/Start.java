@@ -1,12 +1,8 @@
 package com.kmeans;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.lang.Math;
 
@@ -16,60 +12,33 @@ public class Start {
     public static double[] coordinates;
 
     public static void main(String[] args) {
-        //writeUsingFileWriter("BLALAL2");
-        //writeUsingBufferredWriter("ff");
+
         String[] content = readUsingBufferredReader().split(" ");//дані з файлу//TODO static?
         double[] arrContent = Arrays.asList(content).stream().mapToDouble(Double::parseDouble).toArray();
         coordinates = Arrays.copyOfRange(arrContent, 2, arrContent.length);
         int k = (int) arrContent[0];
-        choiceCenter(k);
-        for (double[] center :
-                centerCoord) {
-            clusters.add(new Cluster(center[0], center[1]));
-        }
-        clustering();
-        for (Cluster cluster :
-                clusters) {
-            System.out.println(cluster.toString());
-        }
-        for (Cluster cluster :
-                clusters) {
-           cluster.newCenter();
-            System.out.println("\n"+cluster.toString());
-            cluster.removeAll();
-        }
+        choiceCenter(k);//choice start coordinates
 
-        clustering();
-        for (Cluster cluster :
-                clusters) {
-            cluster.newCenter();
-            System.out.println(cluster.toString());
+        while (isChangeCenter()) {
+            //step 2: calculation distance
+            //step 3: clustering
+            clustering();
+            //step 4: choice new Center
+            choiceCenter(k);
+            //step 5: have the coordinates changed?
         }
-        //System.out.println(Arrays.toString(coordinates));
+        writeUsingBufferredWriter();
     }
 
-    public static void writeUsingFileWriter(String data) {
-        File file = new File("FileWriter.txt");
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(data);
-            fr.write("\tsfa");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+    public static void writeUsingBufferredWriter() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Output.txt"))) {
+            for (Cluster cluster :
+                    clusters) {
+                //cluster.newCenter();
+                System.out.println(cluster.toString());
+                bw.write(cluster.getX() + "\t" + cluster.getY() + "\t" + cluster.getAmount() + "\n");
+
             }
-        }
-    }
-
-    public static void writeUsingBufferredWriter(String data) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("file2.txt"))) {
-
-            bw.write(data + "\n");
 
             System.out.println("Done");
         } catch (IOException e) {
@@ -79,7 +48,7 @@ public class Start {
 
     public static String readUsingBufferredReader() {
         String content = "";
-        try (BufferedReader br = new BufferedReader(new FileReader("file2.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Test-case-2.txt"))) {
             String line = null;
             while ((line = br.readLine()) != null) {
                 line.trim();
@@ -90,27 +59,36 @@ public class Start {
         }
         return content;
     }
+
     /**
      * Сhoice start coordinates
-     * k-number of cluster*/
+     * k-number of cluster
+     */
     public static void choiceCenter(int k) {//TODO Переробити, бо тут можна зразу створювати об Кластера
-        if (centerCoord.isEmpty()) {
+        if (clusters.isEmpty()) {
             System.out.println("Yes List Center is Empty");
+            int x = 0;//start coordinates x
+            int y = 1;//start coordinates y
             for (int i = 0; i < k; i++) {
-                double[] point = {coordinates[i], coordinates[i + 1]};
-                centerCoord.add(point);
-                System.out.println("Choice center " + Arrays.toString(point));
+                clusters.add(new Cluster(coordinates[x], coordinates[y]));
+                System.out.println("Choice center [" + x + " , " + y + "]");
+                x += 2;
+                y += 2;
             }
         } else {
             System.out.println("NO");
-
-
+            for (Cluster cluster :
+                    clusters) {
+                cluster.newCenter();
+                System.out.println("\n" + cluster.toString());
+                cluster.removeAllPoins();//clean cluster
+            }
         }
     }
 
     /**
      * which point to which cluster is closer
-     * */
+     */
     public static void clustering() {
         for (int i = 0; i < coordinates.length; i += 2) {
             //minDistance
@@ -126,7 +104,7 @@ public class Start {
             }
 
             System.out.println("X= " + coordinates[i] + " Y= " + coordinates[i + 1] + " Center = " + numOfMin);
-            double[]point={coordinates[i],coordinates[i+1]};
+            double[] point = {coordinates[i], coordinates[i + 1]};
             clusters.get(numOfMin).addPoint(point);
         }
     }
@@ -143,9 +121,14 @@ public class Start {
         return distance;
     }
 
-    public static void minDistance(int step, int numMin, double min, double[] coordinates) {
-        double[] center = centerCoord.get(step);
-
-        //distanceCenterToAllPoint()
+    /**
+     * Check the optimal choice the points
+     */
+    public static boolean isChangeCenter() {//TODo наркутив з змінними, тяжко для розуміння
+        for (Cluster cluster :
+                clusters) {
+            if (!cluster.isOptimal()) return true;
+        }
+        return false;
     }
 }
