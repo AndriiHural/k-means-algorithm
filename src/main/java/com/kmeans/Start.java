@@ -1,6 +1,5 @@
 package com.kmeans;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,9 +8,14 @@ import java.lang.Math;
 public class Start {
     private static List<Cluster> clusters = new ArrayList<>();
     private static double[] coordinates;
-    private static final String READFILE="Test-case-2.txt";
+    private static final String READFILE = "Test-case-2.txt";
+
     public static void main(String[] args) {
-        String[] content = IOWithFile.readUsingBufferredReader(READFILE).split(" ");//дані з файлу//TODO static?
+        new Start();
+    }
+
+    public Start() {
+        String[] content = IOWithFile.readUsingBufferredReader(READFILE).split(" ");
         double[] arrContent = Arrays.asList(content).stream().mapToDouble(Double::parseDouble).toArray();
         coordinates = Arrays.copyOfRange(arrContent, 2, arrContent.length);
         int k = (int) arrContent[0];
@@ -39,7 +43,7 @@ public class Start {
             int y = 1;//start coordinates y
             for (int i = 0; i < k; i++) {
                 clusters.add(new Cluster(coordinates[x], coordinates[y]));
-                System.out.println("Choice center [" + x + " , " + y + "]");
+                System.out.println("Choice center [" + coordinates[x] + " , " + coordinates[y] + "]");
                 x += 2;
                 y += 2;
             }
@@ -68,7 +72,7 @@ public class Start {
                 if (distance < min) {
                     min = distance;
                     numOfMin = j;
-                } else if (distance == min) System.out.println("===");
+                }
             }
 
             System.out.println("X= " + coordinates[i] + " Y= " + coordinates[i + 1] + " Center = " + numOfMin);
