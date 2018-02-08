@@ -10,7 +10,6 @@ public class IOWithFile {
             for (Cluster cluster :
                     clusters) {
                 //cluster.newCenter();
-                System.out.println(cluster.toString());
                 String x = String.format("%.2f", cluster.getX());
                 String y = String.format("%.2f", cluster.getY());
                 String amount=Integer.toString(cluster.getAmount());
@@ -18,7 +17,6 @@ public class IOWithFile {
                 bw.newLine();
             }
 
-            System.out.println("Done");
         } catch (IOException e) {
             e.printStackTrace();
         }

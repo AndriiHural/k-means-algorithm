@@ -88,13 +88,11 @@ public class Cluster {
         double newY = sumY / points.size();
         if (x == newX && y == newY) {
             isOptimal = true;
-            System.out.println("\t Oll center is [" + x + " , " + y + "]");
         } else {
             isOptimal = false;
             x = newX;
 
             y = newY;
-            System.out.println("\t New center is [" + x + " , " + y + "]");
         }
     }
 

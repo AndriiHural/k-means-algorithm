@@ -38,21 +38,17 @@ public class Start {
      */
     public static void choiceCenter(int k) {
         if (clusters.isEmpty()) {
-            System.out.println("Yes List Center is Empty");
             int x = 0;//start coordinates x
             int y = 1;//start coordinates y
             for (int i = 0; i < k; i++) {
                 clusters.add(new Cluster(coordinates[x], coordinates[y]));
-                System.out.println("Choice center [" + coordinates[x] + " , " + coordinates[y] + "]");
                 x += 2;
                 y += 2;
             }
         } else {
-            System.out.println("NO");
             for (Cluster cluster :
                     clusters) {
                 cluster.newCenter();
-                System.out.println("\n" + cluster.toString());
                 cluster.removeAllPoins();//clean cluster
             }
         }
@@ -63,7 +59,6 @@ public class Start {
      */
     public static void clustering() {
         for (int i = 0; i < coordinates.length; i += 2) {
-            //minDistance
             int numOfMin = 0;//number cluster with min distance
             double min = 9999;  //min distance
             for (int j = 0; j < clusters.size(); j++) {
@@ -74,8 +69,6 @@ public class Start {
                     numOfMin = j;
                 }
             }
-
-            System.out.println("X= " + coordinates[i] + " Y= " + coordinates[i + 1] + " Center = " + numOfMin);
             double[] point = {coordinates[i], coordinates[i + 1]};
             clusters.get(numOfMin).addPoint(point);
         }
@@ -86,8 +79,6 @@ public class Start {
      */
     public static double distanceCenterToAllPoint(double x1, double y1, double x2, double y2) {
         Double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-        System.out.println("Distance between X1= " + x1 + " Y1 " + y1 + " X2= " + x2 + " Y2 " + y2 + " ->" + distance);
-
         return distance;
     }
 
