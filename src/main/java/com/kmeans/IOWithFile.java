@@ -2,19 +2,23 @@ package com.kmeans;
 
 import java.io.*;
 import java.util.List;
+/**
+ * Write and reade file
+ * */
+class IOWithFile {
 
-public class IOWithFile {
+    static void writeUsingBufferedWriter(List<Cluster> clusters) {
 
-    public static void writeUsingBufferredWriter(List<Cluster> clusters) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Output.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("Output.txt"))) {
             for (Cluster cluster :
                     clusters) {
                 //cluster.newCenter();
-                String x = String.format("%.2f", cluster.getX());
-                String y = String.format("%.2f", cluster.getY());
-                String amount=Integer.toString(cluster.getAmount());
-                bw.write(x + " " + y + " " + amount.trim());
-                bw.newLine();
+                String xCoordinateOfCenter = String.format("%.2f", cluster.getxCoordinateOfCenter());
+                String yCoordinateOfCenter = String.format("%.2f", cluster.getyCoordinateOfCenter());
+                String amountPointsInCluster = Integer.toString(cluster.getAmount());
+                writer.write(xCoordinateOfCenter + " " + yCoordinateOfCenter + " " + amountPointsInCluster.trim());
+                writer.newLine();
             }
 
         } catch (IOException e) {
@@ -22,12 +26,14 @@ public class IOWithFile {
         }
     }
 
-    public static String readUsingBufferredReader(String file) {
+    static String readUsingBufferedReader(String nameOfInputFile) {
+
         String content = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(
+                new FileReader(nameOfInputFile))) {
             String line;
             while ((line = br.readLine()) != null) {
-                line.trim();
+                line=line.trim();
                 content += line + " ";
             }
         } catch (IOException e) {

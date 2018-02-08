@@ -1,46 +1,54 @@
 package com.kmeans;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.lang.Math;
+import java.util.Arrays;
+import java.util.ArrayList;
+
+import static java.lang.Math.*;
 
 public class Start {
     private static List<Cluster> clusters = new ArrayList<>();
     private static double[] coordinates;
-    private static final String READFILE = "Test-case-1.txt";
+    private static final String INPUT_FILE = "Test-case-1.txt";
 
     public static void main(String[] args) {
         new Start();
     }
 
-    public Start() {
-        String[] content = IOWithFile.readUsingBufferredReader(READFILE).split(" ");
-        double[] arrContent = Arrays.asList(content).stream().mapToDouble(Double::parseDouble).toArray();
+    private Start() {
+
+        String[] contentInputFile = IOWithFile.readUsingBufferedReader(INPUT_FILE)
+                .split(" ");
+        double[] arrContent = Arrays.asList(contentInputFile)
+                .stream()
+                .mapToDouble(Double::parseDouble)
+                .toArray();
         coordinates = Arrays.copyOfRange(arrContent, 2, arrContent.length);
-        int k = (int) arrContent[0];
-        choiceCenter(k);//choice start coordinates
+        int numberOfCluster = (int) arrContent[0];
+        choiceCenter(numberOfCluster);//choice start coordinates
 
         while (isChangeCenter()) {
             //step 2: calculation distance
             //step 3: clustering
             clustering();
             //step 4: choice new Center
-            choiceCenter(k);
+            choiceCenter(numberOfCluster);
             //step 5: have the coordinates changed?
         }
-        IOWithFile.writeUsingBufferredWriter(clusters);
+        IOWithFile.writeUsingBufferedWriter(clusters);
     }
 
     /**
-     * Сhoice start coordinates
-     * k-number of cluster
+     * Calculate coordinates of center or choice coordinate of start
+     *
+     * @param numberOfCluster The number of cluster need to choice, how many start coordinates we need.
      */
-    public static void choiceCenter(int k) {
+    private static void choiceCenter(int numberOfCluster) {
+
         if (clusters.isEmpty()) {
             int x = 0;//start coordinates x
             int y = 1;//start coordinates y
-            for (int i = 0; i < k; i++) {
+            for (int i = 0; i < numberOfCluster; i++) {
                 clusters.add(new Cluster(coordinates[x], coordinates[y]));
                 x += 2;
                 y += 2;
@@ -49,43 +57,51 @@ public class Start {
             for (Cluster cluster :
                     clusters) {
                 cluster.newCenter();
-                cluster.removeAllPoins();//clean cluster
+                cluster.removeAllPoints();//clean cluster
             }
         }
     }
 
     /**
-     * which point to which cluster is closer
+     * To join point to proper cluster we need to find the closest cluster to point and combine them into new cluster
      */
-    public static void clustering() {
+    private static void clustering() {
+
         for (int i = 0; i < coordinates.length; i += 2) {
-            int numOfMin = 0;//number cluster with min distance
+            int numCloserCluster = 0;//number cluster with min distance
             double min = 9999;  //min distance
             for (int j = 0; j < clusters.size(); j++) {
                 Cluster cluster = clusters.get(j);
-                double distance = distanceCenterToAllPoint(cluster.getX(), cluster.getY(), coordinates[i], coordinates[i + 1]);
+                double distance = distanceCenterToAllPoint(cluster.getxCoordinateOfCenter(), cluster.getyCoordinateOfCenter(),
+                        coordinates[i], coordinates[i + 1]);
                 if (distance < min) {
                     min = distance;
-                    numOfMin = j;
+                    numCloserCluster = j;
                 }
             }
             double[] point = {coordinates[i], coordinates[i + 1]};
-            clusters.get(numOfMin).addPoint(point);
+            clusters.get(numCloserCluster)
+                    .addPoint(point);
         }
     }
 
     /**
-     * Відстань від центра до точоки
+     * Return distance from center to point
+     *
+     * @param x1,y2 coordinate of center
+     * @param x2,x2 coordinate of other point
      */
-    public static double distanceCenterToAllPoint(double x1, double y1, double x2, double y2) {
-        Double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-        return distance;
+    private static double distanceCenterToAllPoint(double x1, double y1, double x2, double y2) {
+
+        return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     }
 
     /**
-     * Check the optimal choice the points
+     * Check the optimal choice the points. If center point doesn't change, after calculation new center, this point
+     * is optimal. If center point to each cluster is optimal, we need finish algorithm.
      */
-    public static boolean isChangeCenter() {
+    private static boolean isChangeCenter() {
+
         for (Cluster cluster :
                 clusters) {
             if (!cluster.isOptimal()) return true;

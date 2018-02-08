@@ -5,11 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Contain center-points and other points this cluster
+ * Contain center-points and other points this cluster.
+ *
+ * xCoordinateOfCenter, yCoordinateOfCenter are coordinates center of the cluster.
+ * points are a set of points belonging to the cluster .
+ * isOptimal cluster is optimal if during two steps, center of cluster doesn't change
+ * amount is number of point in cluster
  */
 public class Cluster {
-    private double x;
-    private double y;
+    private double xCoordinateOfCenter;
+    private double yCoordinateOfCenter;
     private List<double[]> points = new ArrayList<>();
     private boolean isOptimal = false;
     private int amount;
@@ -22,25 +27,25 @@ public class Cluster {
         this.amount = amount;
     }
 
-    public Cluster(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public Cluster(double xCoordinateOfCenter, double yCoordinateOfCenter) {
+        this.xCoordinateOfCenter = xCoordinateOfCenter;
+        this.yCoordinateOfCenter = yCoordinateOfCenter;
     }
 
-    public double getX() {
-        return x;
+    public double getxCoordinateOfCenter() {
+        return xCoordinateOfCenter;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setxCoordinateOfCenter(double xCoordinateOfCenter) {
+        this.xCoordinateOfCenter = xCoordinateOfCenter;
     }
 
-    public double getY() {
-        return y;
+    public double getyCoordinateOfCenter() {
+        return yCoordinateOfCenter;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setyCoordinateOfCenter(double yCoordinateOfCenter) {
+        this.yCoordinateOfCenter = yCoordinateOfCenter;
     }
 
     public double[] getPoint(int i) {
@@ -53,13 +58,14 @@ public class Cluster {
 
     @Override
     public String toString() {
+
         String contain = "";
         for (double[] point : points) {
             contain += Arrays.toString(point) + " ";
         }
         return "Cluster{" +
-                "x=" + x +
-                ", y=" + y +
+                "xCoordinateOfCenter=" + xCoordinateOfCenter +
+                ", yCoordinateOfCenter=" + yCoordinateOfCenter +
                 ", points=" + contain +
                 '}';
     }
@@ -77,6 +83,7 @@ public class Cluster {
     }
 
     public void newCenter() {
+
         amount = points.size();
         double sumX = 0, sumY = 0;
         for (double[] point :
@@ -86,17 +93,16 @@ public class Cluster {
         }
         double newX = sumX / points.size();
         double newY = sumY / points.size();
-        if (x == newX && y == newY) {
+        if (xCoordinateOfCenter == newX && yCoordinateOfCenter == newY) {
             isOptimal = true;
         } else {
             isOptimal = false;
-            x = newX;
-
-            y = newY;
+            xCoordinateOfCenter = newX;
+            yCoordinateOfCenter = newY;
         }
     }
 
-    public void removeAllPoins() {
+    public void removeAllPoints() {
         points.clear();
     }
 }
