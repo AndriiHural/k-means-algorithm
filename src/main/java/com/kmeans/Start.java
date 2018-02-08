@@ -8,7 +8,7 @@ import java.lang.Math;
 public class Start {
     private static List<Cluster> clusters = new ArrayList<>();
     private static double[] coordinates;
-    private static final String READFILE = "Test-case-2.txt";
+    private static final String READFILE = "Test-case-1.txt";
 
     public static void main(String[] args) {
         new Start();

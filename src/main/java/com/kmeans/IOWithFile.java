@@ -13,7 +13,9 @@ public class IOWithFile {
                 System.out.println(cluster.toString());
                 String x = String.format("%.2f", cluster.getX());
                 String y = String.format("%.2f", cluster.getY());
-                bw.write(x + "\t" + y + "\t" + cluster.getAmount() + "\n");
+                String amount=Integer.toString(cluster.getAmount());
+                bw.write(x + " " + y + " " + amount.trim());
+                bw.newLine();
             }
 
             System.out.println("Done");
