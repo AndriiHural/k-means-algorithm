@@ -11,7 +11,7 @@ Input
 The first line of the file contains two integers, separated by a tab character. The first one is number of clusters K and the second one is available points N.
 The rest of the file contains N rows, each row contains two real numbers separated by a tab character, which are the coordinates of the points on the square.
 ### Input:
-| x | y |
+| xCoordinateOfCenter | yCoordinateOfCenter |
 | ------ | ------ |
 | 2   |4 |
 | 1   |0 | 

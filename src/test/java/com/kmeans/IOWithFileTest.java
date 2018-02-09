@@ -8,6 +8,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class IOWithFileTest {
+    /**The name of the input file must match the name of the input file in the Start class*/
     private final String INPUT_FIlE="Test-case-1.txt";
     private final String OUTPUT_FIlE="Output.txt";
     @Test
