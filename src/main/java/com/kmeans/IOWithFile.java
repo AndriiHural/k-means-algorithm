@@ -13,11 +13,10 @@ class IOWithFile {
                 new FileWriter("Output.txt"))) {
             for (Cluster cluster :
                     clusters) {
-                //cluster.newCenter();
                 String xCoordinateOfCenter = String.format("%.2f", cluster.getxCoordinateOfCenter());
                 String yCoordinateOfCenter = String.format("%.2f", cluster.getyCoordinateOfCenter());
                 String amountPointsInCluster = Integer.toString(cluster.getAmount());
-                writer.write(xCoordinateOfCenter + " " + yCoordinateOfCenter + " " + amountPointsInCluster.trim());
+                writer.write(xCoordinateOfCenter + "\t" + yCoordinateOfCenter + "\t" + amountPointsInCluster.trim());
                 writer.newLine();
             }
 
@@ -33,8 +32,8 @@ class IOWithFile {
                 new FileReader(nameOfInputFile))) {
             String line;
             while ((line = br.readLine()) != null) {
-                line=line.trim();
-                content += line + " ";
+                line=line.trim().replace("   ","\t");
+                content += line + "\t";
             }
         } catch (IOException e) {
             e.printStackTrace();

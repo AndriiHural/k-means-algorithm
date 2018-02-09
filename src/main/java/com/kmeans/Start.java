@@ -18,7 +18,7 @@ public class Start {
     private Start() {
 
         String[] contentInputFile = IOWithFile.readUsingBufferedReader(INPUT_FILE)
-                .split(" ");
+                .split("\t");
         double[] arrContent = Arrays.asList(contentInputFile)
                 .stream()
                 .mapToDouble(Double::parseDouble)
