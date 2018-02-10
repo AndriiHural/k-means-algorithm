@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Contain center-points and other points this cluster.
- *
+ * <p>
  * xCoordinateOfCenter, yCoordinateOfCenter are coordinates center of the cluster.
  * points are a set of points belonging to the cluster .
  * isOptimal cluster is optimal if during two steps, center of cluster doesn't change
@@ -18,13 +18,22 @@ public class Cluster {
     private List<double[]> points = new ArrayList<>();
     private boolean isOptimal = false;
     private int amount;
+    private double inClusterAvrgDistance;
+
+    public double getInClusterAvrgDistance() {
+        return inClusterAvrgDistance;
+    }
+
+    public void setInClusterAvrgDistance(double inClusterAvrgDistance) {
+        this.inClusterAvrgDistance = inClusterAvrgDistance;
+    }
 
     public int getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setAmount() {
+        this.amount = points.size();
     }
 
     public Cluster(double xCoordinateOfCenter, double yCoordinateOfCenter) {
@@ -84,7 +93,6 @@ public class Cluster {
 
     public void newCenter() {
 
-        amount = points.size();
         double sumX = 0, sumY = 0;
         for (double[] point :
                 points) {
@@ -104,5 +112,9 @@ public class Cluster {
 
     public void removeAllPoints() {
         points.clear();
+    }
+
+    public void setPoints(List<double[]> points) {
+        this.points = points;
     }
 }

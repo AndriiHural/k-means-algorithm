@@ -32,13 +32,6 @@ public class ClusterTest {
     }
 
     @Test
-    public void getAmount() throws Exception {
-        List<double[]> points = cluster.getPoints();
-        cluster.setAmount(points.size());
-        assertEquals(2,cluster.getAmount());
-    }
-
-    @Test
     public void newCenterX() throws Exception {
         cluster.newCenter();
         assertEquals(1.5,cluster.getxCoordinateOfCenter(),0);

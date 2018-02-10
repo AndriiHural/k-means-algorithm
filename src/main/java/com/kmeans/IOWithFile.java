@@ -7,16 +7,14 @@ import java.util.List;
  * */
 class IOWithFile {
 
-    static void writeUsingBufferedWriter(List<Cluster> clusters) {
+    static void writeUsingBufferedWriter(List<String> clusters) {
 
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter("Output.txt"))) {
-            for (Cluster cluster :
+            for (String cluster :
                     clusters) {
-                String xCoordinateOfCenter = String.format("%.2f", cluster.getxCoordinateOfCenter());
-                String yCoordinateOfCenter = String.format("%.2f", cluster.getyCoordinateOfCenter());
-                String amountPointsInCluster = Integer.toString(cluster.getAmount());
-                writer.write(xCoordinateOfCenter + "\t" + yCoordinateOfCenter + "\t" + amountPointsInCluster.trim());
+
+                writer.write(cluster);
                 writer.newLine();
             }
 
