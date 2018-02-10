@@ -7,11 +7,11 @@ import static java.lang.Math.*;
 public class Start {
     private static List<Cluster> clusters = new ArrayList<>();
     private static List<String> clustersOld = new ArrayList<>();
-    private static double quality;
+    private static List<Integer> randomCenter;
     private static double qualityOld;
-    private static int count=0;
+    private static int count = 0;
     private static double[] coordinates;
-    private static final String INPUT_FILE = "Test-case-3.txt";
+    private static final String INPUT_FILE = "Test-case-2.txt";
     private static int numberOfCluster;
 
     public static void main(String[] args) {
@@ -21,12 +21,12 @@ public class Start {
     private Start() {
         dataPreparation();
 
-        while (count<5){
+        while (count < 5) {
+            randomCenter = randomPoint();
             startAlgorithm();
             qualityOfClustering();
-            System.out.println("Step");
         }
-        //IOWithFile.writeUsingBufferedWriter(clustersOld);
+        IOWithFile.writeUsingBufferedWriter(clustersOld);
     }
 
     private static void startAlgorithm() {
@@ -42,6 +42,9 @@ public class Start {
         }
     }
 
+    /**
+     * read file and divide to parameter, coordinates
+     */
     private static void dataPreparation() {
 
         String[] contentInputFile = IOWithFile.readUsingBufferedReader(INPUT_FILE)
@@ -63,10 +66,7 @@ public class Start {
 
         if (clusters.isEmpty()) {
             for (int i = 0; i < numberOfCluster; i++) {
-                List<Integer> randomCenter=randomPoint();
-                clusters.add(new Cluster(coordinates[randomCenter.get(i)], coordinates[randomCenter.get(i)+1]));
-                System.out.println("x=  "+clusters.get(i).getxCoordinateOfCenter()+" y= "+clusters.get(i).getyCoordinateOfCenter());
-
+                clusters.add(new Cluster(coordinates[randomCenter.get(i)], coordinates[randomCenter.get(i) + 1]));
             }
         } else {
             for (Cluster cluster :
@@ -79,19 +79,26 @@ public class Start {
         }
     }
 
-    static List<Integer> randomPoint(){
+    /**
+     * Random start center points
+     */
+    private static List<Integer> randomPoint() {
         Random r = new Random();
-        List<Integer> list=new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         list.add(0);
-        while (list.size()<numberOfCluster){
-            int rundNumber=r.nextInt(coordinates.length/2)*2;
-            for (int i :
-                    list) {
-                if((i!=rundNumber)&&(rundNumber<=coordinates.length/2)){
-                    list.add(rundNumber);
-                    break;
+        while (list.size() < numberOfCluster) {
+            int rundNumber = 0;
+            for (int i = 0; i < list.size(); i++) {
+                rundNumber = r.nextInt(coordinates.length / 2) * 2;
+                for (int j = 0; j < list.size(); j++) {
+                    if ((list.get(j) == rundNumber) || rundNumber >= (coordinates.length / 2)) {
+                        i--;
+                        break;
+                    }
                 }
             }
+            list.add(rundNumber);
+            Collections.shuffle(list);
         }
         return list;
     }
@@ -125,13 +132,18 @@ public class Start {
      * @param x1,y2 coordinate of center
      * @param x2,x2 coordinate of other point
      */
-    static double distanceCenterToAllPoint(double x1, double y1,
-                                           double x2, double y2) {
+    private static double distanceCenterToAllPoint(double x1, double y1,
+                                                   double x2, double y2) {
 
         return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     }
 
-    static double inClusterAverageDistance(Cluster cluster) {
+    /**
+     * calculate the mean intra-cluster distance in one cluster
+     *
+     * @param cluster cluster in which to calculate
+     */
+    private static double inClusterAverageDistance(Cluster cluster) {
 
         double sumDistance = 0;
         for (double[] point :
@@ -143,7 +155,10 @@ public class Start {
         return cluster.getInClusterAvrgDistance();
     }
 
-    static double averageDistance() {
+    /**
+     * calculate the mean intra-cluster distance
+     */
+    private static double averageDistance() {
 
         double sum = 0;
         for (Cluster cluster :
@@ -153,13 +168,16 @@ public class Start {
         return sum / numberOfCluster;
     }
 
-    static double outClusterAverageDistance() {
+    /**
+     * calculate the average intercluster distance
+     */
+    private static double outClusterAverageDistance() {
 
         List<double[]> pointsCenterCluster = new ArrayList<>();
         Cluster pseudoCluster = new Cluster(0, 0);
         for (Cluster cluster :
                 clusters) {
-            pointsCenterCluster.add(new double[]{cluster.getxCoordinateOfCenter(),cluster.getyCoordinateOfCenter()});
+            pointsCenterCluster.add(new double[]{cluster.getxCoordinateOfCenter(), cluster.getyCoordinateOfCenter()});
         }
         pseudoCluster.setPoints(pointsCenterCluster);
         pseudoCluster.newCenter();
@@ -167,30 +185,35 @@ public class Start {
         return inClusterAverageDistance(pseudoCluster);
     }
 
-    static double clusterizationEvaluation(double inClusterAverageDistance, double OutClusterAverageDistance) {
+    /**
+     * function to assess the quality of the clusterer.
+     * To get the best result, you can run the clustering algorithm several times, then select the result with the smallest value.
+     */
+    private static double clusterizationEvaluation(double inClusterAverageDistance, double OutClusterAverageDistance) {
 
         return numberOfCluster * (inClusterAverageDistance / OutClusterAverageDistance);
     }
 
-    static void qualityOfClustering(){
+    /**
+     * To get the best result, you can run the clustering algorithm several times, then select the result with the smallest value.
+     */
+    private static void qualityOfClustering() {
 
-        quality = clusterizationEvaluation(averageDistance(), outClusterAverageDistance());
-        if (qualityOld>0){
-            System.out.println("Yes");
-            if (quality<qualityOld){
-               // clustersToString();
-                count=0;
-            }else count++;
-        }else {
-            System.out.println("No");
+        double quality = clusterizationEvaluation(averageDistance(), outClusterAverageDistance());
+        if (qualityOld > 0) {
+            if (quality < qualityOld) {
+                clustersToString();
+                count = 0;
+            } else count++;
+        } else {
             count++;
             qualityOld = quality;
-            //clustersToString();
+            clustersToString();
         }
-        System.out.println("qualityOld "+qualityOld);
         clusters.clear();
     }
-    static void clustersToString(){
+
+    private static void clustersToString() {
         clustersOld.clear();
         for (Cluster cluster :
                 clusters) {
@@ -200,6 +223,7 @@ public class Start {
             clustersOld.add(xCoordinateOfCenter + "\t" + yCoordinateOfCenter + "\t" + amountPointsInCluster.trim());
         }
     }
+
     /**
      * Check the optimal choice the points. If center point doesn't change, after calculation new center, this point
      * is optimal. If center point to each cluster is optimal, we need finish algorithm.
