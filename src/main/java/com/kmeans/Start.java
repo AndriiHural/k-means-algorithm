@@ -10,6 +10,7 @@ public class Start {
     private static List<Integer> randomCenter;
     private static double qualityOld;
     private static int count = 0;
+    private static int countRestar = 0;
     private static double[] coordinates;
     private static final String INPUT_FILE = "Test-case-2.txt";
     private static int numberOfCluster;
@@ -21,7 +22,7 @@ public class Start {
     private Start() {
         dataPreparation();
 
-        while (count < 5) {
+        while (count < 5) {// number of iterations
             randomCenter = randomPoint();
             startAlgorithm();
             qualityOfClustering();
@@ -72,9 +73,26 @@ public class Start {
             for (Cluster cluster :
                     clusters) {
                 cluster.newCenter();
-                cluster.setInClusterAvrgDistance(inClusterAverageDistance(cluster));
                 cluster.setAmount();
+                cluster.setInClusterAvrgDistance(inClusterAverageDistance(cluster));
                 cluster.removeAllPoints();//clean cluster
+            }
+        }
+        for (Cluster c :
+                clusters) {
+            if (Double.isNaN(c.getxCoordinateOfCenter())) {
+                System.out.println("Порожній кластер");
+                if (countRestar < 20) { //number of restart
+                    countRestar++;
+                } else {
+                    System.out.println("20 раз результат -порожній кластер");
+                    System.exit(1);
+                }
+                clusters.clear();
+                count=0;
+                randomCenter = randomPoint();
+                choiceCenter(numberOfCluster);
+                break;
             }
         }
     }

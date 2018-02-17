@@ -76,6 +76,7 @@ public class Cluster {
                 "xCoordinateOfCenter=" + xCoordinateOfCenter +
                 ", yCoordinateOfCenter=" + yCoordinateOfCenter +
                 ", points=" + contain +
+                ", amount= "+amount+
                 '}';
     }
 

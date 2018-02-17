@@ -17,7 +17,7 @@ class IOWithFile {
                 writer.write(cluster);
                 writer.newLine();
             }
-
+            System.out.println("Done");
         } catch (IOException e) {
             e.printStackTrace();
         }
